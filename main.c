@@ -257,41 +257,39 @@ void menuclientes() {
 }
 
 
-        case '3': {     //LISTAR TODOS OS CLIENTES
-            clear();
+    case '3': {     //LISTAR TODOS OS CLIENTES
+    clear();
 
-            if (lista.tamanho == 0) {
+    if (lista.tamanho == 0) {
                 mvprintw(2,2,"Nenhum cliente cadastrado.");
-            } else {
-                mvprintw(2,2,"LISTA DE CLIENTES:");
-                int linha = 4;
+    } else {
+        mvprintw(2,2,"LISTA DE CLIENTES:");
+        int linha = 4;
 
-                for (int i = 0; i < lista.tamanho; i++) {
-                    if (lista.itens[i].ativo == 1) {
+    for (int i = 0; i < lista.tamanho; i++) {
+        if (lista.itens[i].ativo == 1) {
 
-                        if (lista.itens[i].tipo == pf) {
-                            mvprintw(linha, 2,
-                                "ID: %d | PF | Nome: %s",
-                                lista.itens[i].id,
-                                lista.itens[i].pfdata.nome
-                            );
-                        }
-                        else {
-                            mvprintw(linha, 2,
-                                "ID: %d | PJ | Razao: %s",
-                                lista.itens[i].id,
-                                lista.itens[i].pjdata.razaosocial
-                            );
-                        }
-
-                        linha++;
-                    }
-                }
-            }
-
-            getch();
-            break;
+        if (lista.itens[i].tipo == pf) {
+            mvprintw(linha, 2,
+            "ID: %d | PF | Nome: %s",
+            lista.itens[i].id,
+            lista.itens[i].pfdata.nome);
         }
+    else {
+        mvprintw(linha, 2,
+        "ID: %d | PJ | Razao: %s",
+        lista.itens[i].id,
+        lista.itens[i].pjdata.razaosocial);
+    }
+
+    linha++;
+        }
+    }
+    }
+
+    getch();
+    break;
+    }
 
 
     case '4': {     //REMOVER CLIENTE
