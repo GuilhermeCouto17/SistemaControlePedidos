@@ -5,15 +5,21 @@
 #include "validacoes.h"
 #include "cliente.h"
 #include "lista_cliente.h"
+#include "lista_produto.h"
+#include "lista_pedido.h"
+
 
 listaclientes lista;
-
+lista_produto produtos;
+lista_pedido pedidos;
 
 
 void menuprincipal();
 void menuclientes();
 void menuprodutos();
 void menupedidos();
+void menuprodutos();
+
 
 int main(){
     initscr();   //inicia o ncurses
@@ -23,6 +29,9 @@ int main(){
     curs_set(0);   //oculta o cursor do mouse
 
     inicializarlistaclientes(&lista);
+    listaprodutos(&produtos);
+    ListaPedidos(&pedidos);
+
 
     menuprincipal();   //chama o menu principal
 
@@ -46,7 +55,7 @@ void menuprincipal(){
         mvprintw(7, 4, "3 - Pedidos");
         mvprintw(8, 4, "0 - Sair");
 
-        mvprintw(10, 4, "Escolha uma opção: ");
+        mvprintw(10, 4, "Escolha uma opcao: ");
         refresh();
         opcao = getch();   //Lê cada tecla que for apertada
 
@@ -324,83 +333,251 @@ void menuclientes() {
 
 
 
-void menuprodutos(){
+void menuprodutos() {
+    int opcao = 0;
 
-    int opcao=0;
-
-    while(1){
+    while (1) {
         clear();
+        mvprintw(2, 2, "=============================");
+        mvprintw(3, 2, "        MENU PRODUTOS        ");
+        mvprintw(4, 2, "=============================");
 
-        mvprintw(1, 2, "===========================================");
-        mvprintw(2, 2, "               MENU PRODUTOS               ");
-        mvprintw(3, 2, "===========================================");
+        mvprintw(6, 4, "1 - Cadastrar Produto");
+        mvprintw(7, 4, "2 - Consultar Produto");
+        mvprintw(8, 4, "3 - Listar Produtos");
+        mvprintw(9, 4, "4 - Remover Produto");
+        mvprintw(10,4, "0 - Voltar");
 
-        mvprintw(5, 4, "1 - Cadastrar Produto");
-        mvprintw(6, 4, "2 - Consultar Produtos");
-        mvprintw(7, 4, "3 - Listar Produtos");
-        mvprintw(8, 4, "4 - Remover Produto");
-        mvprintw(9, 4, "0 - Voltar");
-
-        mvprintw(11, 4, "Escolha uma das opção: ");
+        mvprintw(12, 4, "Escolha uma opcao: ");
         refresh();
         opcao = getch();
 
-        switch(opcao){
-            case '1':   //Cadastra o produto
-            break;
+        switch (opcao) {
 
-            case '2':   //Consulta o produto
-            break;
+        case '1': { // cadastrar
+            clear();
+            produto p;
 
-            case '3':   //Lista o produto
-            break;
+            echo();
 
-            case '4':   //Remove o produto
-            break;
+            mvprintw(2,2,"ID: ");
+            scanw("%d",&p.id);
 
-            case '0':   //Volta ao menu principal
+            mvprintw(3,2,"Nome: ");
+            getstr(p.nome);
+
+            mvprintw(4,2,"Preco: ");
+            scanw("%f",&p.preco);
+
+            noecho();
+
+            p.ativo = 1;
+
+            inserirproduto(&produtos, p);
+
+            mvprintw(6,2,"Produto cadastrado!");
+            getch();
+            break;
+        }
+
+        case '2': { // consultar
+            clear();
+            int id;
+
+            echo();
+            mvprintw(2,2,"Digite o ID: ");
+            scanw("%d",&id);
+            noecho();
+
+            produto *p = produtoporid(&produtos, id);
+
+            if (p == NULL) {
+                mvprintw(4,2,"Produto nao encontrado.");
+            } else {
+                mvprintw(4,2,"ID: %d", p->id);
+                mvprintw(5,2,"Nome: %s", p->nome);
+                mvprintw(6,2,"Preco: %.2f", p->preco);
+            }
+
+            getch();
+            break;
+        }
+
+        case '3': { // listar
+            clear();
+
+            if (produtos.tamanho == 0) {
+                mvprintw(2,2,"Nenhum produto cadastrado.");
+            } else {
+                mvprintw(2,2,"LISTA DE PRODUTOS:");
+
+                int linha = 4;
+                for (int i = 0; i < produtos.tamanho; i++) {
+                    if (produtos.itens[i].ativo == 1) {
+                        mvprintw(linha,2,
+                            "ID: %d | Nome: %s | Preco: %.2f",
+                            produtos.itens[i].id,
+                            produtos.itens[i].nome,
+                            produtos.itens[i].preco
+                        );
+                        linha++;
+                    }
+                }
+            }
+
+            getch();
+            break;
+        }
+
+        case '4': { // remover
+            clear();
+            int id;
+
+            echo();
+            mvprintw(2,2,"Digite o ID do produto: ");
+            scanw("%d",&id);
+            noecho();
+
+            if (removerproduto(&produtos, id)) {
+                mvprintw(4,2,"Produto removido!");
+            } else {
+                mvprintw(4,2,"Produto nao encontrado.");
+            }
+
+            getch();
+            break;
+        }
+
+        case '0':
             return;
         }
     }
 }
 
 
-void menupedidos(){
+void menupedidos() {
+    int opc = 0;
 
-    int opcao=0;
-
-    while(1){
+    while (1) {
         clear();
+        mvprintw(2,2, "===============================");
+        mvprintw(3,2, "          MENU PEDIDOS         ");
+        mvprintw(4,2, "===============================");
 
-        mvprintw(1, 2, "===========================================");
-        mvprintw(2, 2, "               MENU PEDIDOS                ");
-        mvprintw(3, 2, "===========================================");
+        mvprintw(6,2, "1 - Cadastrar Pedido");
+        mvprintw(7,2, "2 - Consultar Pedido");
+        mvprintw(8,2, "3 - Listar Pedidos");
+        mvprintw(9,2, "4 - Remover Pedido");
+        mvprintw(10,2,"0 - Voltar");
 
-        mvprintw(5, 4, "1 - Cadastrar Pedido");
-        mvprintw(6, 4, "2 - Consultar Pedido");
-        mvprintw(7, 4, "3 - Listar Pedidos");
-        mvprintw(8, 4, "4 - Remover Pedido");
-        mvprintw(9, 4, "0 - Voltar");
-
-        mvprintw(11, 4, "Escolha uma opção: ");
+        mvprintw(12,2,"Escolha uma opcao: ");
         refresh();
-        opcao = getch();
+        opc = getch();
 
-        switch(opcao){
-            case '1':   //Cadastra o pedido
-            break;
+        switch(opc) {
 
-            case '2':   //Consulta o pedido
-            break;
+            // CADASTRAR -----------------------------------
+            case '1': {
+                clear();
+                pedido p;
 
-            case '3':   //Lista o pedido
-            break;
+                mvprintw(2,2,"ID do pedido: ");
+                echo(); scanw("%d", &p.id); noecho();
 
-            case '4':   //Remove o pedido
-            break;
+                mvprintw(3,2,"ID do cliente: ");
+                echo(); scanw("%d", &p.id_cliente); noecho();
 
-            case '0':   //Volta ao menu principal
-            return;
+                mvprintw(4,2,"ID do produto: ");
+                echo(); scanw("%d", &p.id_produto); noecho();
+
+                mvprintw(5,2,"Quantidade: ");
+                echo(); scanw("%d", &p.quantidade); noecho();
+
+                // CALCULAR VALOR BASEADO NO PRODUTO
+                produto *pr = produtoporid(&produtos, p.id_produto);
+
+                if (pr == NULL) {
+                    mvprintw(7,2,"Produto nao encontrado!");
+                    getch();
+                    break;
+                }
+
+                p.valor_total = pr->preco * p.quantidade;
+                p.ativo = 1;
+
+                inserirPedido(&pedidos, p);
+
+                mvprintw(8,2,"Pedido cadastrado!");
+                getch();
+                break;
+            }
+
+            // CONSULTAR -----------------------------------
+            case '2': {
+                clear();
+                int id;
+
+                mvprintw(2,2,"Digite o ID do pedido: ");
+                echo(); scanw("%d", &id); noecho();
+
+                pedido *p = PedidoPorId(&pedidos, id);
+
+                if (p == NULL)
+                    mvprintw(4,2,"Pedido nao encontrado!");
+                else {
+                    mvprintw(4,2,"ID: %d", p->id);
+                    mvprintw(5,2,"Cliente: %d", p->id_cliente);
+                    mvprintw(6,2,"Produto: %d", p->id_produto);
+                    mvprintw(7,2,"Qtd: %d", p->quantidade);
+                    mvprintw(8,2,"Total: %.2f", p->valor_total);
+                }
+
+                getch();
+                break;
+            }
+
+            // LISTAR --------------------------------------
+            case '3': {
+                clear();
+                mvprintw(2,2,"LISTA DE PEDIDOS:");
+
+                int linha = 4;
+                for (int i = 0; i < pedidos.tamanho; i++) {
+                    if (pedidos.itens[i].ativo == 1) {
+                        mvprintw(linha,2,
+                            "ID: %d | Cliente: %d | Produto: %d | Qtd: %d | Total: %.2f",
+                            pedidos.itens[i].id,
+                            pedidos.itens[i].id_cliente,
+                            pedidos.itens[i].id_produto,
+                            pedidos.itens[i].quantidade,
+                            pedidos.itens[i].valor_total
+                        );
+                        linha++;
+                    }
+                }
+
+                getch();
+                break;
+            }
+
+            // REMOVER -------------------------------------
+            case '4': {
+                clear();
+                int id;
+                mvprintw(2,2,"ID do pedido: ");
+                echo(); scanw("%d", &id); noecho();
+
+                if (removerPedido(&pedidos, id))
+                    mvprintw(4,2,"Pedido removido!");
+                else
+                    mvprintw(4,2,"Pedido nao encontrado!");
+
+                getch();
+                break;
+            }
+
+            case '0':
+                return;
         }
     }
 }
