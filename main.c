@@ -86,7 +86,7 @@ void menuclientes() {
     while (1) {
         clear();
         mvprintw(2, 2, "==========================================");
-        mvprintw(3, 2, "                 MENU CLIENTES            ");
+        mvprintw(3, 2, "                 MENU CLIENTES            ");       //Menu de clientes onde ele vai cadastrar os clientes e fazer tudo 
         mvprintw(4, 2, "==========================================");
 
         mvprintw(6, 4, "1 - Cadastrar Cliente");
@@ -229,7 +229,7 @@ void menuclientes() {
 }
 
 
-    case '2': {     //CONSULTAR CLIENTE
+    case '2': {
     clear();
 
     int id;
@@ -265,8 +265,7 @@ void menuclientes() {
     break;
 }
 
-
-    case '3': {     //LISTAR TODOS OS CLIENTES
+    case '3': {
     clear();
 
     if (lista.tamanho == 0) {
@@ -300,8 +299,7 @@ void menuclientes() {
     break;
     }
 
-
-    case '4': {     //REMOVER CLIENTE
+    case '4': {
     clear();
 
     int id;
@@ -322,15 +320,11 @@ void menuclientes() {
     break;
 }
 
-
-
-        case '0':       //Voltar pro menu principal
+        case '0':
             return;
         }
     }
 }
-
-
 
 
 void menuprodutos() {
@@ -354,7 +348,7 @@ void menuprodutos() {
 
         switch (opcao) {
 
-        case '1': { // cadastrar
+        case '1': { 
             clear();
             produto p;
 
@@ -380,7 +374,7 @@ void menuprodutos() {
             break;
         }
 
-        case '2': { // consultar
+        case '2': { 
             clear();
             int id;
 
@@ -403,7 +397,7 @@ void menuprodutos() {
             break;
         }
 
-        case '3': { // listar
+        case '3': { 
             clear();
 
             if (produtos.tamanho == 0) {
@@ -429,7 +423,7 @@ void menuprodutos() {
             break;
         }
 
-        case '4': { // remover
+        case '4': { 
             clear();
             int id;
 
@@ -476,7 +470,6 @@ void menupedidos() {
 
         switch(opc) {
 
-            // CADASTRAR -----------------------------------
             case '1': {
                 clear();
                 pedido p;
@@ -493,7 +486,6 @@ void menupedidos() {
                 mvprintw(5,2,"Quantidade: ");
                 echo(); scanw("%d", &p.quantidade); noecho();
 
-                // CALCULAR VALOR BASEADO NO PRODUTO
                 produto *pr = produtoporid(&produtos, p.id_produto);
 
                 if (pr == NULL) {
@@ -512,7 +504,6 @@ void menupedidos() {
                 break;
             }
 
-            // CONSULTAR -----------------------------------
             case '2': {
                 clear();
                 int id;
@@ -536,7 +527,6 @@ void menupedidos() {
                 break;
             }
 
-            // LISTAR --------------------------------------
             case '3': {
                 clear();
                 mvprintw(2,2,"LISTA DE PEDIDOS:");
@@ -544,23 +534,22 @@ void menupedidos() {
                 int linha = 4;
                 for (int i = 0; i < pedidos.tamanho; i++) {
                     if (pedidos.itens[i].ativo == 1) {
-                        mvprintw(linha,2,
-                            "ID: %d | Cliente: %d | Produto: %d | Qtd: %d | Total: %.2f",
-                            pedidos.itens[i].id,
-                            pedidos.itens[i].id_cliente,
-                            pedidos.itens[i].id_produto,
-                            pedidos.itens[i].quantidade,
-                            pedidos.itens[i].valor_total
-                        );
-                        linha++;
-                    }
+                    mvprintw(linha,2,
+                    "ID: %d | Cliente: %d | Produto: %d | Qtd: %d | Total: %.2f",
+                    pedidos.itens[i].id,
+                    pedidos.itens[i].id_cliente,
+                    pedidos.itens[i].id_produto,
+                    pedidos.itens[i].quantidade,
+                    pedidos.itens[i].valor_total
+                    );
+                    linha++;
                 }
+            }
 
                 getch();
                 break;
             }
 
-            // REMOVER -------------------------------------
             case '4': {
                 clear();
                 int id;
